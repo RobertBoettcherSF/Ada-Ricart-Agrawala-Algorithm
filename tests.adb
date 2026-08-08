@@ -15,7 +15,7 @@ begin
    -- TEST 1
    Put_Line ("TEST 1 - Initialization State");
    Put_Line ("  1.1 Assert state is strictly Released");
-   Initialize (N1, 1, Standard);
+   Initialize (N1, 1, Ricart_Agrawala.Standard);
    Assert (Get_State (N1) = Released, "Node should be released");
    Put_Line ("      PASS");
    Put_Line ("  1.2 Assert internal sequence clocks default to 0");
@@ -35,7 +35,7 @@ begin
    -- TEST 3
    Put_Line ("TEST 3 - Outgoing Broadcast Consistency");
    Put_Line ("  3.1 Assert broadcast masks N-1 network connections");
-   Assert (Requests (2) = True and Requests (Max_Nodes) = True, "Requests missed nodes");
+   Assert (Requests (2) = True and Requests (Node_ID(Max_Nodes)) = True, "Requests missed nodes");
    Put_Line ("      PASS");
    Put_Line ("  3.2 Assert reflexive isolation (no self-requests)");
    Assert (Requests (1) = False, "Sent request to self");
@@ -44,7 +44,7 @@ begin
    -- TEST 4
    Put_Line ("TEST 4 - Receiving Requests (Idle/Released)");
    Put_Line ("  4.1 Assert immediate reply constraint when Released");
-   Initialize (N2, 2, Standard);
+   Initialize (N2, 2, Ricart_Agrawala.Standard);
    Receive_Request (N2, 1, 1, Send_Rep);
    Assert (Send_Rep = True, "Did not reply while Released");
    Put_Line ("      PASS");
@@ -74,7 +74,7 @@ begin
    -- TEST 7
    Put_Line ("TEST 7 - Time-based Tie Resolution");
    Put_Line ("  7.1 Assert older request (lower seq) defeats newer request");
-   Initialize (N1, 1, Standard); Initialize (N2, 2, Standard);
+   Initialize (N1, 1, Ricart_Agrawala.Standard); Initialize (N2, 2, Ricart_Agrawala.Standard);
    Request_Critical_Section (N1, Requests); -- Seq 1
    Receive_Request (N2, 1, 1, Send_Rep); 
    Request_Critical_Section (N2, Requests); -- Seq 2
@@ -85,7 +85,7 @@ begin
    -- TEST 8
    Put_Line ("TEST 8 - Spatial Tie Resolution (Same Sequence)");
    Put_Line ("  8.1 Assert lower Node ID breaks tie and forces reply from higher ID");
-   Initialize (N1, 1, Standard); Initialize (N2, 2, Standard);
+   Initialize (N1, 1, Ricart_Agrawala.Standard); Initialize (N2, 2, Ricart_Agrawala.Standard);
    Request_Critical_Section (N1, Requests); Request_Critical_Section (N2, Requests);
    Receive_Request (N2, 1, 1, Send_Rep); 
    Assert (Send_Rep = True, "Higher ID failed to yield to lower ID");
@@ -98,7 +98,7 @@ begin
    -- TEST 9
    Put_Line ("TEST 9 - Roucairol-Carvalho First Run Isolation");
    Put_Line ("  9.1 Assert initial run requires standard N-1 requests");
-   Initialize (N1, 1, Roucairol_Carvalho);
+   Initialize (N1, 1, Ricart_Agrawala.Roucairol_Carvalho);
    Request_Critical_Section (N1, Requests);
    Assert (Requests (2) = True, "Variant failed to request initially");
    Put_Line ("      PASS");
@@ -123,13 +123,13 @@ begin
    -- TEST 12
    Put_Line ("TEST 12 - Mutual Exclusion Guarantee Pre-conditions");
    Put_Line ("  12.1 Assert denial of CS if N-1 replies are incomplete");
-   Initialize (N1, 1, Standard);
+   Initialize (N1, 1, Ricart_Agrawala.Standard);
    Request_Critical_Section (N1, Requests);
    Receive_Reply (N1, 2); 
    Assert (Can_Enter_CS (N1) = False, "CS barrier bypassed");
    Put_Line ("      PASS");
    Put_Line ("  12.2 Assert clearance to CS exactly when replies matched");
-   for I in 3 .. Max_Nodes loop Receive_Reply (N1, I); end loop;
+   for I in 3 .. Node_ID(Max_Nodes) loop Receive_Reply (N1, I); end loop;
    Assert (Can_Enter_CS (N1) = True, "CS barrier failed to lift");
    Put_Line ("      PASS");
 

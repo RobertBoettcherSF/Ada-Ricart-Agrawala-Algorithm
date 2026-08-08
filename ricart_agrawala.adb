@@ -3,7 +3,7 @@ package body Ricart_Agrawala is
    procedure Initialize 
      (Node    : out RA_Node;
       ID      : in  Node_ID;
-      Variant : in  Algorithm_Variant := Standard) is
+      Variant : in  Algorithm_Variant := Algorithm_Variant'(Standard)) is
    begin
       Node.ID               := ID;
       Node.State            := Released;
@@ -28,7 +28,7 @@ package body Ricart_Agrawala is
          if I /= Node.ID then
             -- Standard variant: Request from everyone.
             -- Roucairol-Carvalho: Request only if permission is not already implicitly held.
-            if Node.Variant = Standard or else not Node.Permissions (I) then
+            if Node.Variant = Algorithm_Variant'(Standard) or else not Node.Permissions (I) then
                Outgoing_Requests (I) := True;
                Node.Replies_Needed := Node.Replies_Needed + 1;
             else
@@ -74,7 +74,7 @@ package body Ricart_Agrawala is
       else
          Send_Reply := True;
          -- In Roucairol-Carvalho, sending a reply means yielding implicit permission
-         if Node.Variant = Roucairol_Carvalho then
+         if Node.Variant = Algorithm_Variant'(Roucairol_Carvalho) then
             Node.Permissions (Sender) := False;
          end if;
       end if;
@@ -85,7 +85,7 @@ package body Ricart_Agrawala is
       Sender : in  Node_ID) is
    begin
       -- Cache the permission if using the optimized variant
-      if Node.Variant = Roucairol_Carvalho then
+      if Node.Variant = Algorithm_Variant'(Roucairol_Carvalho) then
          Node.Permissions (Sender) := True;
       end if;
 
