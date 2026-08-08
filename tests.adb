@@ -1,3 +1,26 @@
+-- Ricart-Agrawala Algorithm Verification & Validation Test Suite
+-- 
+-- This test suite validates the correctness of the Ricart-Agrawala mutual exclusion
+-- algorithm implementation through 19 assertions across 13 test categories.
+-- 
+-- Test Philosophy:
+--   - Assumes the implementation is broken (pessimistic approach)
+--   - Each test only PASSes when the assumption is provably disproved
+--   - Uses Ada's pragma Assert for runtime verification
+--
+-- Test Categories:
+--   1. Initialization State - Verify safe default state
+--   2. Request Execution Boundary - Verify state transitions
+--   3. Outgoing Broadcast Consistency - Verify request messaging
+--   4. Receiving Requests (Idle/Released) - Verify reply behavior when released
+--   5. Receiving Requests (Held/Executing) - Verify deferral when in CS
+--   6. Safe Lock Release - Verify release and deferred reply handling
+--   7. Time-based Tie Resolution - Verify Lamport clock priority
+--   8. Spatial Tie Resolution - Verify Node ID tie-breaking
+--   9-11. Roucairol-Carvalho Variant - Verify permission caching optimization
+--   12. Mutual Exclusion Guarantee - Verify CS entry preconditions
+--   13. Critical Section Entry - Verify state locking on entry
+
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Assertions; use Ada.Assertions;
 with Ricart_Agrawala; use Ricart_Agrawala;

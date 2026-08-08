@@ -57,14 +57,17 @@ package Ricart_Agrawala is
    function Get_Seq_Num (Node : in RA_Node) return Sequence_Number;
 
 private
+   -- RA_Node represents a single node in the distributed system.
+   -- Each node maintains its own state and communicates with peers
+   -- to achieve mutual exclusion for the Critical Section.
    type RA_Node is tagged record
-      ID               : Node_ID := 1;
-      State            : Node_State := Released;
-      Seq_Num          : Sequence_Number := 0;
-      Highest_Seen_Seq : Sequence_Number := 0;
-      Variant          : Algorithm_Variant := Algorithm_Variant'(Standard);
-      Deferred         : Node_Set := (others => False);
-      Replies_Needed   : Natural := 0;
-      Permissions      : Node_Set := (others => False); -- For Roucairol-Carvalho
+      ID               : Node_ID := 1;              -- Unique identifier for this node
+      State            : Node_State := Released;    -- Current CS state machine position
+      Seq_Num          : Sequence_Number := 0;       -- Lamport logical clock: current request sequence
+      Highest_Seen_Seq : Sequence_Number := 0;       -- Lamport logical clock: highest seen from any node
+      Variant          : Algorithm_Variant := Algorithm_Variant'(Standard);  -- Algorithm variant in use
+      Deferred         : Node_Set := (others => False);  -- Nodes whose REQUESTs were deferred (will REPLY later)
+      Replies_Needed   : Natural := 0;               -- Count of outstanding REPLY messages needed
+      Permissions      : Node_Set := (others => False); -- For Roucairol-Carvalho: cached implicit permissions
    end record;
 end Ricart_Agrawala;
