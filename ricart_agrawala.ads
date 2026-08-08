@@ -19,7 +19,7 @@ package Ricart_Agrawala is
    procedure Initialize 
      (Node    : out RA_Node;
       ID      : in  Node_ID;
-      Variant : in  Algorithm_Variant := Standard);
+      Variant : in  Algorithm_Variant := Algorithm_Variant'(Standard));
 
    -- Called when the node wishes to enter the Critical Section (CS).
    -- Returns a boolean mask of nodes that must be sent a REQUEST message.
@@ -62,7 +62,7 @@ private
       State            : Node_State := Released;
       Seq_Num          : Sequence_Number := 0;
       Highest_Seen_Seq : Sequence_Number := 0;
-      Variant          : Algorithm_Variant := Standard;
+      Variant          : Algorithm_Variant := Algorithm_Variant'(Standard);
       Deferred         : Node_Set := (others => False);
       Replies_Needed   : Natural := 0;
       Permissions      : Node_Set := (others => False); -- For Roucairol-Carvalho
