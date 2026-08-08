@@ -8,7 +8,7 @@ BIN_DIR = bin
 
 all: $(BIN_DIR)/main $(BIN_DIR)/tests
 
-$(BIN_DIR)/main: src/main.adb src/ricart_agrawala.ads ricart_agrawala.adb
+$(BIN_DIR)/main: main.adb ricart_agrawala.ads ricart_agrawala.adb
 	mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(GNAT) $(GNATFLAGS) -D $(OBJ_DIR) -o $(BIN_DIR)/main main.adb
 
