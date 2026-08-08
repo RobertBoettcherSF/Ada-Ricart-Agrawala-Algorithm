@@ -71,6 +71,10 @@ package body Ricart_Agrawala is
       if Defer_Request then
          Node.Deferred (Sender) := True;
          Send_Reply := False;
+         -- In Roucairol-Carvalho, receiving a request invalidates cached permission
+         if Node.Variant = Algorithm_Variant'(Roucairol_Carvalho) then
+            Node.Permissions (Sender) := False;
+         end if;
       else
          Send_Reply := True;
          -- In Roucairol-Carvalho, sending a reply means yielding implicit permission
